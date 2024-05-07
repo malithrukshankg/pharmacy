@@ -1,7 +1,7 @@
 class Customer:
 
     def __init__(self, id, name, reward):
-        if not name.stip().isalpha():
+        if not name.strip().isalpha():
             raise ValueError(
                 "Name should only contain alphabetic characters please enter correct name")
 
@@ -102,35 +102,37 @@ class Order:
 
 
 class Records:
-    list_customers = {}
-    list_products = {}
+    list_customer = {}
+    list_product = {}
 
-    def read_customer():
-        with open("customers.txt", "r") as file:
+    def read_customer(self):
+        with open("C:/Users/DELL/Desktop/Melbourne/RMIT/ACA/Sem_1/programming/assigments/2/customers.txt", "r") as file:
             lines = file.readlines()
 
         for line in lines:
+            print("Line",line)
             customer_data = line.split(',')
-            if customer_data[0].startswith('V'):
+            if customer_data[0].startswith('B'):
+                print("V")
                 customer = BasicCustomer(customer_data[0].strip(), customer_data[1].strip(
-                ), customer_data[3].strip())
+                ), int(customer_data[3].strip()))
             else:
                 customer = VIPCustomer(customer_data[0].strip(), customer_data[1].strip(
                 ), customer_data[3].strip(), customer_data[4].strip())
 
-            Records.list_customers[customer.name] = customer
+            Records.list_customer[customer.name] = customer
 
-    def read_product():
-        with open("product.txt", "r") as file:
+    def read_product(self):
+        with open("C:/Users/DELL/Desktop/Melbourne/RMIT/ACA/Sem_1/programming/assigments/2/products.txt", "r") as file:
             lines = file.readlines()
 
         for line in lines:
             product_data = line.split(',')
 
             product = Product(product_data[0].strip(), product_data[1].strip(
-            ), product_data[2].strip(), product_data[3].strip())
+            ), float(product_data[2].strip()))
 
-            Records.list_products[product.name] = product
+            Records.list_product[product.name] = product
 
     def find_customer(id):
         customer = Records.list_customers[id]
@@ -185,7 +187,7 @@ class Operations:
         except ValueError:
             print("Wrong value enterted please enter a correct value")
 
-    def purchase():
+    def purchase(self):
         # Infinite while loop run until customer enter the correct name.
         while 1:
             customerName = input("Please enter name of the customer : ")
@@ -202,7 +204,7 @@ class Operations:
 
             product = product.strip()
 
-            if product not in Records.list_products:
+            if product not in Records.list_product:
                 print(" "*20, "Invalid product: ", product +
                       " entered please re-enter the product")
             else:
@@ -223,10 +225,19 @@ class Operations:
                 print(" "*20, "Value must be a integer. Please enter valid value")
                 continue
 
-        product = Product(Records.list_products[product])
+        product = Records.list_product[product]
 
         unit_price = product.price
         productQuantity = productQuantity
+
+        if customerName in Records.list_customer:
+            customer = Records.list_customer[customerName]
+        else:
+            customer = Customer("",customerName,0)
+            Records.list_customer[customerName] = customer
+
+
+        
 
         if isinstance(customer,VIPCustomer) :
             original_cost = totalCost
@@ -237,14 +248,18 @@ class Operations:
 
         # Reward point is calculated baased on total cost before the deduction
         current_order_rewardPoints = round(totalCost)
+        customer.reward += current_order_rewardPoints
+
+        Records.list_customer[customerName] = customer
 
         # If customer already exists new reward point is added to the previous reward point
-        if customerName in Records.list_customers:
-            customer = Records.list_customers[customerName]
+        if customerName in Records.list_customer:
+            customer = Records.list_customer[customerName]
             customer.reward += current_order_rewardPoints
         else:
             # If a customer is new then a new record is created
-            Records.list_customers[customerName] = current_order_rewardPoints
+            print("sjdfsbaf")
+            Records.list_customer[customerName] = current_order_rewardPoints
 
         # The bill is printed below
         print(" "*20, "-"*40)
@@ -262,3 +277,6 @@ class Operations:
         print(" "*20, "Total cost:" + " "*14, round(totalCost, 2))
         print(" "*20, "Earned reward:" + " "*11,
               current_order_rewardPoints, "\n")
+
+operations = Operations()
+operations.purchase()
