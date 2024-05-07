@@ -227,7 +227,13 @@ class Operations:
 
         unit_price = product.price
         productQuantity = productQuantity
-        totalCost = productQuantity*unit_price
+
+        if isinstance(customer,VIPCustomer) :
+            original_cost = totalCost
+            discount = totalCost*customer.discount_rate
+            totalCost = totalCost - discount
+        else:
+            totalCost = productQuantity*unit_price
 
         # Reward point is calculated baased on total cost before the deduction
         current_order_rewardPoints = round(totalCost)
@@ -249,6 +255,10 @@ class Operations:
         print(" "*20, "Unit Price:" + " "*14, product.price)
         print(" "*20, "Quantity:" + " "*16, productQuantity, "\n")
         print(" "*20, "-"*40)
+        if isinstance(customer,VIPCustomer) :
+            print(" "*20, "Original cost:" + " "*14, round(original_cost, 2))
+            print(" "*20, "Discount" + " "*14, round(discount, 2))
+
         print(" "*20, "Total cost:" + " "*14, round(totalCost, 2))
         print(" "*20, "Earned reward:" + " "*11,
               current_order_rewardPoints, "\n")
