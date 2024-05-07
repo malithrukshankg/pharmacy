@@ -1,3 +1,6 @@
+import sys
+
+
 class Customer:
 
     def __init__(self, id, name, reward):
@@ -169,7 +172,8 @@ class Operations:
 
     def display_products(self):
         self.records.list_products()
-
+    
+    @staticmethod
     def menu():
         print(" "*25, "Welcome to the RMIT pharmacy!")
         print(" "*20, "#"*40)
@@ -186,7 +190,9 @@ class Operations:
             choosed_option = int(input(" "*21 + "Choose one option : "))
         except ValueError:
             print("Wrong value enterted please enter a correct value")
+        return choosed_option
 
+    @staticmethod
     def purchase(self):
         # Infinite while loop run until customer enter the correct name.
         while 1:
@@ -277,6 +283,28 @@ class Operations:
         print(" "*20, "Total cost:" + " "*14, round(totalCost, 2))
         print(" "*20, "Earned reward:" + " "*11,
               current_order_rewardPoints, "\n")
+        
+        
+    def run_program(self):
+            choosed_option = self.menu()
+
+            if choosed_option == 1:
+                self.purchase(self)
+            # if choosed_option == 2:
+            #     addUpdateProducts()
+            # if choosed_option == 3:
+            #     displayCustomers()
+            # if choosed_option == 4:
+            #     displayProducts()
+            # if choosed_option == 5:
+            #     printBill()
+            if choosed_option == 0:
+                sys.exit()
+            elif choosed_option not in [1, 2, 3, 4, 5, 0]:
+                print("Wrong value enterted please enter a correct value")
+
+            self.menu()   
+            
 
 operations = Operations()
-operations.purchase()
+operations.run_program()
